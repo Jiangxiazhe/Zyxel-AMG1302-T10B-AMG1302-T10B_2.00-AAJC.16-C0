@@ -13,13 +13,13 @@ sudo ./run.sh -r zyxel ../FIRMWARE/2.00(AAJC.16)C0.bin
 ```
 The default username is 'admin', password is '1234'.
 The result of the simulation is as follows: 
-![img/web.png]
+![img/web.png](img/web.png)
 ### analyze
 Using ghidra, we found that there may be a directory traversal vulnerability in the line 47 of the function FUN_0040fffc
 
-![img/analyze1.png]
+![img/analyze1.png](img/analyze1.png)
 We discovered that the variable `local_120` is concatenated from the string constant `"/var/tmp/"` and the variable `uVar5`. We then checked whether the value of `uVar5` is controllable. By analyzing the data flow of `uVar5`, we found that it ultimately originates from `puVar1`.
-![img/analyze2.png]
+![img/analyze2.png](img/analyze2.png)
 Through analysis of the function `FUN_0040f704` using Ghidra, we determined that the function's purpose is to parse and reassemble formatted key-value pair strings, returning a dynamically allocated array (`local_3c`). Each element of the array points to a structure containing a key (Key) and a value (Value). Combining this with the previous findings, we can infer that the code in function `FUN_0040fffc` is intended to retrieve the value of the `"SESSIONID"` field from the request and create a file. However, there is no validation of the input string, which poses a risk of a directory traversal vulnerability.
 
 The details of the function as follows:
@@ -52,4 +52,4 @@ Upgrade-Insecure-Requests: 1
 
 ```
 The result of the POC is as follows. You can create the file `test.php` in any location outside of `/var/tmp/`.
-![/1/img/attack.png]
+![/1/img/attack.png](/1/img/attack.png)
